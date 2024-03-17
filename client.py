@@ -1,31 +1,35 @@
 import socket, random
-from pair_connect import *
+from connectDB import *
 
+host=socket.gethostbyname(socket.gethostname())
+port=5050
+addr = (host, port)
+DISCONNECT_MESSAGE = 'quit'
+client = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
-host='127.0.0.1'
-port=3000
-server = socket.socket()
-
-
-try:
-    server.connect((host, port))
-    while True:
-        data = input()
-        server.sendall(data.encode('utf-8'))
-        data = server.recv(1024)
-        print('receive from server:\n', data.decode('utf-8'))
-        data = input('leave a msg here:\n')
-except socket.error as err:
-    print(err)
-finally:
-    server.close()
-
-
-#取得使用者性別
-def getGender(_):
+''' 等取資料庫欄位內容--取得使用者性別'''
+def getGender():
+    global user
     user = ["female", "male"]
     return random.choice(user)
 
-print(getGender())
 
-client_connect(server, male)
+
+def clientStart():
+    try:
+        client.connect(addr)
+    
+        while True:
+            data = getGender()
+            print(data)
+            client.sendall(data.encode('utf-8'))
+            msg = client.recv(1024)
+            print('receive from socket:\n', msg.decode('utf-8'))
+            
+    except socket.error as err:
+        print(err)
+    finally:
+        client.close()
+
+clientStart()
+client.close()

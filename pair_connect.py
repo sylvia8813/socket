@@ -6,6 +6,7 @@ from server import *
 host='localhost'
 port=3000
 
+gender = getGender()
 
 # 配對邏輯
 def client_connect(client_socket, gender):
