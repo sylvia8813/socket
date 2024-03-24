@@ -1,30 +1,30 @@
-import socket, random
-from connectDB import *
+import socket
+# from pairFunc import getGender
 
-host=socket.gethostbyname(socket.gethostname())
-port=5050
+host='172.16.15.53'
+port=3000
 addr = (host, port)
 DISCONNECT_MESSAGE = 'quit'
 client = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-
-''' 等取資料庫欄位內容--取得使用者性別'''
-def getGender():
-    global user
-    user = ["female", "male"]
-    return random.choice(user)
-
 
 
 def clientStart():
     try:
         client.connect(addr)
-    
+        print("input female or male")
+        data = str(input())
+        # pair = "female" if data == "male" else "male"
+        client.sendall(data.encode('utf-8'))
         while True:
-            data = getGender()
-            print(data)
-            client.sendall(data.encode('utf-8'))
+            print(f'here')
             msg = client.recv(1024)
-            print('receive from socket:\n', msg.decode('utf-8'))
+            msg = msg.decode('utf-8')
+            if msg:
+                print(f'receive from socket {msg}')
+                break
+            else:
+                pass
+                
             
     except socket.error as err:
         print(err)
